@@ -4,7 +4,7 @@ import mmh3
 import pickle
 
 class Bloom:
-    def __init__(self, num_items=1000, prob=0.01):
+    def __init__(self, num_items=5000, prob=0.01):
         self.num_items = num_items
         self.prob = prob
         self.size = self.get_size()
@@ -53,7 +53,7 @@ class Bloom:
         self.bit_array = info["bit_array"]
 
 class CountingBloom:
-    def __init__(self, num_items=1000, prob=0.01):
+    def __init__(self, num_items=5000, prob=0.01):
         self.num_items = num_items
         self.prob = prob
         self.size = self.get_size()
