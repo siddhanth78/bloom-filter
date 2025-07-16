@@ -127,9 +127,3 @@ def load_filter(bf, filter_path="bloom_filter"):
     with open(f"{filter_path}.pkl", "rb") as file:
        info = pickle.load(file)
     bf.load_into_filter(info)
-
-cbf = CountingBloom()
-
-cbf.add_element("foo")
-cbf.add_element("bar")
-cbf.add_element("foo")
