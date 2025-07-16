@@ -127,3 +127,17 @@ def load_filter(bf, filter_path="bloom_filter"):
     with open(f"{filter_path}.pkl", "rb") as file:
        info = pickle.load(file)
     bf.load_into_filter(info)
+
+def create_filters(num_filters=2, num_items=5000, prob=0.01, type_="bf"):
+    filters = []
+    if type_ == "bf":
+        for _ in range(num_filters):
+            bf = Bloom(num_items, prob)
+            filters.append(bf)
+    elif type_ == "cbf":
+        for _ in range(num_filters):
+            cbf = CountingBloom(num_items, prob)
+            filters.append(cbf)
+    else:
+        return None
+    return filters
