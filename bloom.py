@@ -34,15 +34,15 @@ class Bloom:
             m = mmh3.hash(element, i) % self.size
             if self.bit_array[m] == False:
                 if print_result == True:
-                    print("False")
+                    print(f"Element not in set: {element}")
                 return False
         if print_result == True:
-            print("True")
+            print(f"Element in set: {element}")
         return True
 
-    def save_filter(self, filter_tag="bloom_filter"):
+    def save_filter(self, filter_path="bloom_filter"):
         filter_dict = {"num_items": self.size, "prob": self.prob, "bit_array": self.bit_array, "num_hashes": self.k, "size": self.size}
-        with open(f"{filter_tag}.pkl", "wb") as file:
+        with open(f"{filter_path}.pkl", "wb") as file:
             pickle.dump(filter_dict, file)
 
     def load_into_filter(self, info):
@@ -73,16 +73,26 @@ class CountingBloom:
         self.int_array = [0] * self.size
 
     def add_element(self, element):
+        element_add_in = []
+        element_in = []
         for i in range(self.k):
             m = mmh3.hash(element, i) % self.size
-            self.int_array[m] += 1
+            element_add_in.append(m)
+            if self.int_array[m] > 0:
+                element_in.append(m)
+
+        if len(element_in) < self.k:
+            for j in element_add_in:
+                self.int_array[j] += 1
+        else:
+            print(f"Element already in set: {element}")
 
     def remove_element(self, element):
         remove_in = []
         for i in range(self.k):
             m = mmh3.hash(element, i) % self.size
             if self.int_array[m] == 0:
-                print("Element not in set")
+                print(f"Element not in set: {element}")
                 return None
             remove_in.append(m)
         for j in remove_in:
@@ -100,9 +110,9 @@ class CountingBloom:
             print("True")
         return True
 
-    def save_filter(self, filter_tag="bloom_filter"):
+    def save_filter(self, filter_path="bloom_filter"):
         filter_dict = {"num_items": self.size, "prob": self.prob, "int_array": self.int_array, "num_hashes": self.k, "size": self.size}
-        with open(f"{filter_tag}.pkl", "wb") as file:
+        with open(f"{filter_path}.pkl", "wb") as file:
             pickle.dump(filter_dict, file)
 
     def load_into_filter(self, info):
@@ -113,7 +123,13 @@ class CountingBloom:
         self.int_array = info["int_array"]
 
 
-def load_filter(bf, filter_tag="bloom_filter"):
-    with open(f"{filter_tag}.pkl", "rb") as file:
+def load_filter(bf, filter_path="bloom_filter"):
+    with open(f"{filter_path}.pkl", "rb") as file:
        info = pickle.load(file)
     bf.load_into_filter(info)
+
+cbf = CountingBloom()
+
+cbf.add_element("foo")
+cbf.add_element("bar")
+cbf.add_element("foo")
