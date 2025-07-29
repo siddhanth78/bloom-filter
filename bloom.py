@@ -2,6 +2,7 @@ from bitarray import bitarray
 from math import log, ceil
 import mmh3
 import pickle
+import sys
 
 class Bloom:
     def __init__(self, num_items=5000, prob=0.01):
